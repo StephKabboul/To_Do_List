@@ -1,34 +1,40 @@
-document.getElementById('taskForm').addEventListener('submit', function(event) {
+document.getElementById("taskForm").addEventListener("submit", function (event) {
     event.preventDefault();
-    
-    const task = document.getElementById('task').value;
-    const person = document.getElementById('person').value;
-    
-    console.log('Task:', task);
-    console.log('Person:', person);
 
-    addTaskToPending(task, person);
-    
-    document.getElementById('taskForm').reset();
-}) 
+    const task = document.getElementById("task").value;
+    const person = document.getElementById("person").value;
+    const dueDate = document.getElementById("dueDate").value;
 
-function addTaskToPending(task, person) {
-    const pendingTasks = document.getElementById('pendingTasks');
-    
-    const listItem = document.createElement('li');
-    listItem.textContent = `${task} (Assigned to: ${person})`;
-    console.log('Adding to pending:', listItem.textContent);
-    
-    const doneButton = document.createElement('button');
-    doneButton.textContent = 'Done';
-    doneButton.addEventListener('click', function() {
-        moveToCompleted(listItem, task, person);
-    });
-    
-    listItem.appendChild(doneButton);
-    pendingTasks.appendChild(listItem);
-    console.log('Task added to pending list');
+    addTaskToPending(task, person, dueDate);
+    document.getElementById("taskForm").reset();
+  });
+
+function addTaskToPending(task, person, dueDate) {
+  const pendingTasksList = document.getElementById("PendingTasks");
+  const listItem = document.createElement("li");
+  const currentDate = new Date();
+  const taskDueDate = new Date(dueDate);
+
+  let taskContent = `
+      <div>Task: ${task}</div>
+      <div>Assigned to: ${person}</div>
+      <div>Due: ${dueDate}</div>
+    `;
+
+  if (taskDueDate < currentDate) {
+    listItem.classList.add("expired");
+    taskContent += `<div class="expired-label">Task Past Due</div>`;
+  }
+  taskContent += `<button class="done-button" onclick="markTaskAsDone(this)">Done</button>`;
+
+  listItem.innerHTML = taskContent;
+  pendingTasksList.appendChild(listItem);
 }
 
-function moveToCompleted(listItem, task, person) {
-    const completedTasks = document.getElementById('completedTasks');}
+function markTaskAsDone(button) {
+  const listItem = button.parentElement;
+  const completedTasksList = document.getElementById("CompletedTasks");
+  completedTasksList.appendChild(listItem);
+  button.remove();
+}
+
